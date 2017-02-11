@@ -1,10 +1,11 @@
 import java.awt.Point;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.InputMismatchException;
+import java.util.List;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -147,56 +148,66 @@ public class test {
 			}
 			System.out.println();
 
-			Set<Point> items = new HashSet<Point>();
+			HashSet<Point> items = new HashSet<Point>();
 
-			// // asile then row of the display ...not absolute
-			// int products[][] = { { 1, 8 }, { 24, 4 } };
-			//// int products[][] = { { 1, 8 }, { 24, 4 } };
-			// int locations[][] = new int[products.length][2];
-			// for (int i = 0; i < products.length; i++) {
-			// int[] item = products[i];
-			// int asile = item[0]; // 1 to 24?
-			// int bay = item[1]; // 1 to BAY_LENGTH
-			//
-			// if (asile <= 20) {
-			// locations[i][0] = bay - 1;
-			// locations[i][1] = asile;
-			// } else if (asile <= 40) {
-			// locations[i][0] = BAY_LENGTH + bay;
-			// locations[i][1] = asile - 20 + 1;
-			// } else {
-			// // 2 for spaces
-			// locations[i][0] = BAY_LENGTH * 2 + 2 + (asile - 24);
-			// locations[i][1] = 1 + bay + BAY_LENGTH * (asile - 24 + 1 % 2);
-			// }
-			// }
-			// System.out.println(Arrays.deepToString(locations));
-			// // int[][] locations = { { 8, 1 }, { 13, 6 } };
+			// asile then row of the display ...not absolute
+			// int products[][] = { { 1, 7 }, { 24, 3 }, { 39, 1 }, { 39, 8 },
+			// { 39, 5 } };
+			int products[][] = { { 2, 1 }, { 3, 1 }, { 4, 1 }, { 7, 1 }, { 8, 1 } };
+
+			int locations[][] = new int[products.length][2];
+			for (int i = 0; i < products.length; i++) {
+				int[] item = products[i];
+				int asile = item[0]; // 1 to 24?
+				int bay = item[1]; // 1 to BAY_LENGTH
+
+				if (asile <= 20) {
+					locations[i][0] = bay;
+					locations[i][1] = asile + (int) (asile / 2d - .5);
+				} else if (asile <= 40) {
+					locations[i][0] = BAY_LENGTH + bay;
+					locations[i][1] = (asile - 20) + (int) ((asile - 20) / 2d - .5);
+				} else {
+					// 2 for spaces
+					locations[i][0] = BAY_LENGTH * 2 + 2 + (asile - 24);
+					locations[i][1] = 1 + bay + BAY_LENGTH * (asile - 24 + 1 % 2);
+				}
+			}
+			System.out.println(Arrays.deepToString(locations));
+			// int[][] locations = { { 12, 6 }, { 13, 27 }, { 10, 27 } };
 			// for (int i = 0; i < locations.length; i++) {
 			// int y = locations[i][0];
 			// int x = locations[i][1];
 			// Point pt = null;
 			//
-			// if (!mat[y][x - 1]) {// if there is a free spot to the // left
+			// if (!mat[y][x - 1]) {// if there is a free spot
+			// // to the // left
 			// // add a pt here
-			// pt = new Point(x - 1, y);
-			// items.add(pt);
-			// System.out.println(pt);
+			// Point p = new Point(x - 1, y);
+			// System.out.println("to left " + p);
+			// items.add(p);
+			// continue;
 			// // corners.add(pt);
 			// } else if (!mat[y][x + 1]) {
 			// // add a pt at mat[i1 + 1][j1]
-			// pt = new Point(x + 1, y);
-			// items.add(pt);
-			// System.out.println(pt);
+			//
+			// Point p2 = new Point(x + 1, y);
+			// items.add(p2);
+			// System.out.println("to right " + p2);
 			// // corners.add(pt);
 			// }
-			// items.add(pt);
+			// // if (pt != null)
+			// // items.add(pt);
 			// }
-			items.add(new Point(3, 7));
-			items.add(new Point(0, 9));
-			items.add(new Point(2, 2));
-			Point[] temp = items.toArray(new Point[items.size()]);
-			Collections.shuffle(Arrays.asList(temp));
+
+			items.add(new Point(10, 27));
+			items.add(new Point(6, 0));
+			items.add(new Point(12, 6));
+			items.add(new Point(17, 27));
+			items.add(new Point(14, 27));
+
+			Point[] temp = items.toArray(new Point[items.size() + 1]);
+			// Collections.shuffle(Arrays.asList(temp));
 
 			System.out.println(Arrays.deepToString(temp));
 			System.err.println("-");
@@ -225,8 +236,8 @@ public class test {
 			}
 			System.err.println("------");
 
-//			FloydWarshall2.floydWarshall2(weights, points.length);
-//			FloydWarshall2.printResult(dist, next);
+			// FloydWarshall2.floydWarshall2(weights, points.length);
+			// FloydWarshall2.printResult(dist, next);
 			// FloydWarshall fw = new FloydWarshall(weights);
 
 			// fw.distances();
@@ -240,16 +251,8 @@ public class test {
 				System.out.println();
 			}
 
-			int sub[][] = new int[4][4];
+			int sub[][] = new int[items.size() + 1][items.size() + 1];
 
-			// int len = weights.length - sub.length - 1;
-			//// for (int i = len; i > weights.length; i--) {
-			//// for (int j = len; j > weights.length; j--) {
-			//// sub[len - i][len - j] = (int) weights[i][i];
-			//// }
-			//// }
-			// 15 index
-			// 19-4=15+1=16
 			int len = weights.length - sub.length + 1;
 			for (int i = len - 1; i < weights.length; i++) {
 				for (int j = len - 1; j < weights.length; j++) {
@@ -271,40 +274,6 @@ public class test {
 			} catch (InputMismatchException inputMismatch) {
 				System.out.println("Wrong Input format");
 			}
-
-			//
-
-			// Arrays.fill(array, -1);
-
-			// Point[] sortY = corners.toArray(new Point[corners.size()]);
-			// Arrays.sort(sortY, new Comparator<Point>() {
-			// public int compare(Point a, Point b) {
-			// int xComp = Integer.compare(a.y, b.y);
-			// if (xComp == 0)
-			// return Integer.compare(a.x, b.x);
-			// else
-			// return xComp;
-			// }
-			// });
-			//
-			// for (Point p : sortY) {
-			// System.out.println(p.y + " " + p.x);
-			// }
-			// System.err.println("-----------");
-			//
-			// Point[] sortX = corners.toArray(new Point[corners.size()]);
-			// Arrays.sort(sortX, new Comparator<Point>() {
-			// public int compare(Point a, Point b) {
-			// int xComp = Integer.compare(a.x, b.x);
-			// if (xComp == 0)
-			// return Integer.compare(a.y, b.y);
-			// else
-			// return xComp;
-			// }
-			// });
-			// for (Point p : sortX) {
-			// System.out.println(p.y + " " + p.x);
-			// }
 
 		} catch (
 
