@@ -1,3 +1,4 @@
+
 /*
  * Licensed to GraphHopper GmbH under one or more contributor
  * license agreements. See the NOTICE file distributed with this work for
@@ -80,9 +81,7 @@ public class ProductMap {
 		VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
 		vra.setMaxIterations(20000);
 		// vra.setPrematureBreak(100);
-		
-		
-		
+
 		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
 		/*
 		 * Solve the problem.
@@ -104,61 +103,13 @@ public class ProductMap {
 		/*
 		 * Plot solution.
 		 */
-		
+
 		// SolutionPlotter.plotSolutionAsPNG(vrp, solution,
 		// "output/solomon_C101_specifiedVehicleEndLocations_solution.png","C101");
 		Plotter solPlotter = new Plotter(vrp, solution);
 		solPlotter.plot("output/solomon_C101_specifiedVehicleEndLocations_solution.png", "C101");
-		
+
 		new GraphStreamViewer(vrp, solution).setRenderDelay(50).labelWith(Label.ID).display();
 
 	}
-
-
-
-
-
-
-double[][] DistanceMap = {{0,2,(Double) Double.POSITIVE_INFINITY	,4,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	},
-	{2,0,2,Double.POSITIVE_INFINITY	,4,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	},
-	{Double.POSITIVE_INFINITY	,2,0,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,4,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	},
-	{4,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,0,2,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,6,Double.POSITIVE_INFINITY	},
-	{Double.POSITIVE_INFINITY	,4,Double.POSITIVE_INFINITY	,2,0,1,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	},
-	{Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,1,0,1,2,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	},
-	{Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,4,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,1,0,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	},
-	{Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,2,Double.POSITIVE_INFINITY	,0,2,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	},
-	{Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,2,0,Double.POSITIVE_INFINITY	,2},
-	{Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,6,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,0,3},
-	{Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,Double.POSITIVE_INFINITY	,2,3,0}
-		
-};
-}
-class FloydWarshall {
-    private double[][] distances;
-    private boolean negativeCycle = false;
-
-    public FloydWarshall(double[][] graph) {
-        int n = graph.length;
-        distances = Arrays.copyOf(graph, n);
-
-        for (int k = 0; k < n; k++) {
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    distances[i][j] = Math.min(distances[i][j], distances[i][k] + distances[k][j]);
-                }
-            }
-
-            if (distances[k][k] < 0.0) {
-                this.negativeCycle = true;
-            }
-        }
-    }
-
-    public boolean hasNegativeCycle() {
-        return this.negativeCycle;
-    }
-
-    public double[][] distances() {
-        return distances;
-    }
 }
