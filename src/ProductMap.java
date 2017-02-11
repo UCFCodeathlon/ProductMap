@@ -1,80 +1,113 @@
+/*
+ * Licensed to GraphHopper GmbH under one or more contributor
+ * license agreements. See the NOTICE file distributed with this work for
+ * additional information regarding copyright ownership.
+ *
+ * GraphHopper GmbH licenses this file to you under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ *
+ *       http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+import java.io.File;
 import java.util.Collection;
 
+import com.graphhopper.jsprit.analysis.toolbox.AlgorithmSearchProgressChartListener;
+import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer;
+import com.graphhopper.jsprit.analysis.toolbox.GraphStreamViewer.Label;
+import com.graphhopper.jsprit.analysis.toolbox.Plotter;
 import com.graphhopper.jsprit.core.algorithm.VehicleRoutingAlgorithm;
 import com.graphhopper.jsprit.core.algorithm.box.Jsprit;
-import com.graphhopper.jsprit.core.problem.Location;
+import com.graphhopper.jsprit.core.algorithm.selector.SelectBest;
 import com.graphhopper.jsprit.core.problem.VehicleRoutingProblem;
-import com.graphhopper.jsprit.core.problem.job.Service;
 import com.graphhopper.jsprit.core.problem.solution.VehicleRoutingProblemSolution;
-import com.graphhopper.jsprit.core.problem.vehicle.VehicleImpl;
-import com.graphhopper.jsprit.core.problem.vehicle.VehicleType;
-import com.graphhopper.jsprit.core.problem.vehicle.VehicleTypeImpl;
 import com.graphhopper.jsprit.core.reporting.SolutionPrinter;
-import com.graphhopper.jsprit.core.reporting.SolutionPrinter.Print;
-import com.graphhopper.jsprit.core.util.Solutions;
+import com.graphhopper.jsprit.io.problem.VrpXMLReader;
 
+//SolomonExampleWithSpecifiedVehicleEndLocations
 public class ProductMap {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		System.out.println("Asdf");
 		/*
-		 * get a vehicle type-builder and build a type with the typeId
-		 * "vehicleType" and a capacity of 2 you are free to add an arbitrary
-		 * number of capacity dimensions with
-		 * .addCacpacityDimension(dimensionIndex,dimensionValue)
+		 * some preparation - create output folder
 		 */
-		final int WEIGHT_INDEX = 0;
-		VehicleTypeImpl.Builder vehicleTypeBuilder = VehicleTypeImpl.Builder.newInstance("vehicleType")
-				.addCapacityDimension(WEIGHT_INDEX, 2);
-		VehicleType vehicleType = vehicleTypeBuilder.build();
+		File dir = new File("output");
+		// if the directory does not exist, create it
+		if (!dir.exists()) {
+			System.out.println("creating directory ./output");
+			boolean result = dir.mkdir();
+			if (result)
+				System.out.println("./output created");
+		}
 
 		/*
-		 * get a vehicle-builder and build a vehicle located at (10,10) with
-		 * type "vehicleType"
-		 */
-		VehicleImpl.Builder vehicleBuilder = VehicleImpl.Builder.newInstance("vehicle");
-		vehicleBuilder.setStartLocation(Location.newInstance(10, 10));
-		vehicleBuilder.setType(vehicleType);
-		VehicleImpl vehicle = vehicleBuilder.build();
-		/*
-		 * build services with id 1...4 at the required locations, each with a capacity-demand of 1.
-		 * Note, that the builder allows chaining which makes building quite handy
-		 */
-		Service service1 = Service.Builder.newInstance("1").addSizeDimension(WEIGHT_INDEX,1).setLocation(Location.newInstance(5, 7)).build();
-		Service service2 = Service.Builder.newInstance("2").addSizeDimension(WEIGHT_INDEX,1).setLocation(Location.newInstance(5, 13)).build();
-		Service service3 = Service.Builder.newInstance("3").addSizeDimension(WEIGHT_INDEX,1).setLocation(Location.newInstance(15, 7)).build();
-		Service service4 = Service.Builder.newInstance("4").addSizeDimension(WEIGHT_INDEX,1).setLocation(Location.newInstance(15, 13)).build();
-		
-		/*
-		 * again define a builder to build the VehicleRoutingProblem
+		 * Build the problem.
+		 *
+		 * But define a problem-builder first.
 		 */
 		VehicleRoutingProblem.Builder vrpBuilder = VehicleRoutingProblem.Builder.newInstance();
-		vrpBuilder.addVehicle(vehicle);
-		vrpBuilder.addJob(service1).addJob(service2).addJob(service3).addJob(service4);
-		/*
-		 * build the problem
-		 * by default, the problem is specified such that FleetSize is INFINITE, i.e. an infinite number of
-		 * the defined vehicles can be used to solve the problem
-		 * by default, transport costs are computed as Euclidean distances
-		 */
-		VehicleRoutingProblem problem = vrpBuilder.build();
-		/*
-		* get the algorithm out-of-the-box.
-		*/
-		VehicleRoutingAlgorithm algorithm = Jsprit.createAlgorithm(problem);
 
 		/*
-		* and search a solution which returns a collection of solutions (here only one solution is constructed)
-		*/
-		Collection<VehicleRoutingProblemSolution> solutions = algorithm.searchSolutions();
+		 * A solomonReader reads solomon-instance files, and stores the required
+		 * information in the builder.
+		 */
+		new VrpXMLReader(vrpBuilder).read("input/input.xml");
 
 		/*
-		 * use the static helper-method in the utility class Solutions to get the best solution (in terms of least costs)
+		 * Finally, the problem can be built. By default, transportCosts are
+		 * crowFlyDistances (as usually used for vrp-instances).
 		 */
-		VehicleRoutingProblemSolution bestSolution = Solutions.bestOf(solutions);
-		SolutionPrinter.print(problem, bestSolution, Print.CONCISE);
-		SolutionPrinter.print(problem, bestSolution, Print.VERBOSE);
+		VehicleRoutingProblem vrp = vrpBuilder.build();
+
+		Plotter pblmPlotter = new Plotter(vrp);
+		pblmPlotter.plot("output/solomon_C101_specifiedVehicleEndLocations.png", "C101");
+
+		/*
+		 * Define the required vehicle-routing algorithms to solve the above
+		 * problem.
+		 *
+		 * The algorithm can be defined and configured in an xml-file.
+		 */
+		// VehicleRoutingAlgorithm vra = new
+		// SchrimpfFactory().createAlgorithm(vrp);
+		VehicleRoutingAlgorithm vra = Jsprit.createAlgorithm(vrp);
+		vra.setMaxIterations(20000);
+		// vra.setPrematureBreak(100);
+		vra.getAlgorithmListeners().addListener(new AlgorithmSearchProgressChartListener("output/sol_progress.png"));
+		/*
+		 * Solve the problem.
+		 *
+		 *
+		 */
+		Collection<VehicleRoutingProblemSolution> solutions = vra.searchSolutions();
+
+		/*
+		 * Retrieve best solution.
+		 */
+		VehicleRoutingProblemSolution solution = new SelectBest().selectSolution(solutions);
+
+		/*
+		 * print solution
+		 */
+		SolutionPrinter.print(solution);
+
+		/*
+		 * Plot solution.
+		 */
+		// SolutionPlotter.plotSolutionAsPNG(vrp, solution,
+		// "output/solomon_C101_specifiedVehicleEndLocations_solution.png","C101");
+		Plotter solPlotter = new Plotter(vrp, solution);
+		solPlotter.plot("output/solomon_C101_specifiedVehicleEndLocations_solution.png", "C101");
+
+		new GraphStreamViewer(vrp, solution).setRenderDelay(50).labelWith(Label.ID).display();
+
 	}
 
 }
