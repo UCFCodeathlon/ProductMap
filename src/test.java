@@ -8,6 +8,8 @@ import java.util.Set;
 
 public class test {
 
+	public static final int BAY_LENGTH = 8;
+
 	public static void main(String[] args) {
 		boolean[][] mat;
 
@@ -134,59 +136,32 @@ public class test {
 							}
 						}
 
-						// if (i == 0 && mat[i + 1][j]) {
-						// // to the right
-						// pt = null;
-						// continue;
-						// }
-						// if (i == (width - 1) && mat[i - 1][j]) {
-						// // to the left
-						// pt = null;
-						// System.out.println("before cont");
-						// continue;
-						// }
-
 						System.out.println("After cont");
 						if (pt != null)
 							corners.add(pt);
 					}
-					int[][] products = {{8,1},{13,6}};
-					
-					for (int i1 = 1; i1 < products[0].length; i1++) {
-						for (int j1 = 1; j1 < products.length; j1++) {
-							if(!mat[i1 - 1][j1]){//if there is a free spot to the left
-								//add a pt here
-								pt = new Point(j, i);
-								corners.add(pt);
-							}
-							else{
-								
-								//add a pt at mat[i1 + 1][j1]
-								pt = new Point(j, i);
-								corners.add(pt);
-							}
-							
-						}
-					}
-					
 
 				}
 			}
 			System.out.println();
 
-			// Arrays.sort(corners, new Comparator<Point>() {
-			// public int compare(Point x1, Point x2) {
-			// int result = Double.compare(x1.getX(), x2.getX());
-			// if (result == 0) {
-			// // both X are equal -> compare Y too
-			// result = Double.compare(x1.getY(), x2.getY());
-			// }
-			// return result;
-			// }
-			// });
+			Point[] sortY = corners.toArray(new Point[corners.size()]);
+			Arrays.sort(sortY, new Comparator<Point>() {
+				public int compare(Point a, Point b) {
+					int xComp = Integer.compare(a.y, b.y);
+					if (xComp == 0)
+						return Integer.compare(a.x, b.x);
+					else
+						return xComp;
+				}
+			});
 
-			Point[] ps = corners.toArray(new Point[corners.size()]);
-			Arrays.sort(ps, new Comparator<Point>() {
+			for (Point p : sortY) {
+				System.out.println(p.y + " " + p.x);
+			}
+			System.err.println("-----------");
+			Point[] sortX = corners.toArray(new Point[corners.size()]);
+			Arrays.sort(sortX, new Comparator<Point>() {
 				public int compare(Point a, Point b) {
 					int xComp = Integer.compare(a.x, b.x);
 					if (xComp == 0)
@@ -195,24 +170,48 @@ public class test {
 						return xComp;
 				}
 			});
-
-			for (Point p : ps) {
+			for (Point p : sortX) {
 				System.out.println(p.y + " " + p.x);
 			}
 
-			// for (int i = 0; i < matt.length; i++) {
-			// for (int j = 0; j < matt.length; j++) {
-			// if (mat[i + 1][j] == true) {
-			//
-			// } else if (mat[i + 1][j] == true) {
-			//
-			// } else if (mat[i + 1][j] == true) {
-			//
-			// } else if (mat[i + 1][j] == true) {
-			//
-			// }
-			// }
-			// }
+			// asile then row of the display ...not absolute
+			int products[][] = { { 1, 8 }, { 24, 4 } };
+			int locations[][] = new int[products.length][2];
+			for (int i = 0; i < products.length; i++) {
+				int[] item = products[i];
+				int asile = item[0]; // 1 to 24?
+				int bay = item[1]; // 1 to BAY_LENGTH
+
+				if (asile <= 20) {
+					locations[i][0] = bay - 1;
+					locations[i][1] = asile;
+				} else if (asile <= 40) {
+					locations[i][0] = BAY_LENGTH + bay;
+					locations[i][1] = asile - 20 + 1;
+				} else {
+					// 2 for spaces
+					locations[i][0] = BAY_LENGTH * 2 + 2 + (asile - 24);
+					locations[i][1] = 1 + bay + BAY_LENGTH * (asile - 24 + 1 % 2);
+				}
+			}
+			System.out.println(Arrays.deepToString(locations));
+			// int[][] locations = { { 8, 1 }, { 13, 6 } };
+			for (int i = 0; i < locations.length; i++) {
+				int y = locations[i][0];
+				int x = locations[i][1];
+
+				if (!mat[y][x - 1]) {// if there is a free spot to the // left
+					// add a pt here
+					Point pt = new Point(x - 1, y);
+					System.out.println(pt);
+					// corners.add(pt);
+				} else if (!mat[y][x + 1]) {
+					// add a pt at mat[i1 + 1][j1]
+					Point pt = new Point(x + 1, y);
+					System.out.println(pt);
+					// corners.add(pt);
+				}
+			}
 
 		} catch (
 
