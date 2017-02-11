@@ -150,28 +150,25 @@ public class test {
 						if (pt != null)
 							corners.add(pt);
 					}
-					// if (mat[row - 1][col] && mat[row + 1][col]) {
-					//
-					// }
-					// if (mat[row][col - 1] && mat[row][col + 1]) {
-					//
-					// }
-					//
-					// for (int ii = 0; ii < di.length; ii++) {
-					// for (int jj = 0; jj < dj.length; jj++) {
-					// int row = i + di[ii];
-					// int col = j + dj[jj];
-					//
-					// if (inBounds(col, row, length, width)) {
-					// if (mat[row][col]) {
-					//
-					// corners.add(new Point(col, row));
-					// continue;
-					// // they are connected yo
-					// }
-					// }
-					// }
-					// }
+					int[][] products = {{8,1},{13,6}};
+					
+					for (int i1 = 1; i1 < products[0].length; i1++) {
+						for (int j1 = 1; j1 < products.length; j1++) {
+							if(!mat[i1 - 1][j1]){//if there is a free spot to the left
+								//add a pt here
+								pt = new Point(j, i);
+								corners.add(pt);
+							}
+							else{
+								
+								//add a pt at mat[i1 + 1][j1]
+								pt = new Point(j, i);
+								corners.add(pt);
+							}
+							
+						}
+					}
+					
 
 				}
 			}
