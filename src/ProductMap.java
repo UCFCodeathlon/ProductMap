@@ -59,7 +59,7 @@ public class ProductMap {
 		 * information in the builder.
 		 */
 		new VrpXMLReader(vrpBuilder).read("input/input.xml");
-
+		vrpBuilder.setFleetSize(VehicleRoutingProblem.FleetSize.FINITE);
 		/*
 		 * Finally, the problem can be built. By default, transportCosts are
 		 * crowFlyDistances (as usually used for vrp-instances).

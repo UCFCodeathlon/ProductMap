@@ -21,7 +21,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3schools.com vrp_xml_schema.xsd">
     <problemType>
-        <fleetSize>INFINITE</fleetSize>
+        <fleetSize>FINITE</fleetSize>
         <fleetComposition>HOMOGENEOUS</fleetComposition>
     </problemType>
     <vehicles>
@@ -112,6 +112,43 @@
                 <timeWindow>
                     <start>567.0</start>
                     <end>624.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        
+        <service id="40" type="delivery">
+            <locationId>[x=5.0][y=35.0]</locationId>
+            <coord x="5.0" y="35.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>293.0</start>
+                    <end>314.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="41" type="delivery">
+            <locationId>[x=5.0][y=45.0]</locationId>
+            <coord x="5.0" y="45.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>655.0</start>
+                    <end>706.0</end>
+                </timeWindow>
+            </timeWindows>
+        </service>
+        <service id="42" type="delivery">
+            <locationId>[x=5.0][y=45.0]</locationId>
+            <coord x="5.0" y="45.0"/>
+            <capacity-demand>10</capacity-demand>
+            <duration>90.0</duration>
+            <timeWindows>
+                <timeWindow>
+                    <start>755.0</start>
+                    <end>906.0</end>
                 </timeWindow>
             </timeWindows>
         </service>
