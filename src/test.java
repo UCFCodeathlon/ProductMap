@@ -145,34 +145,7 @@ public class test {
 			}
 			System.out.println();
 
-			Point[] sortY = corners.toArray(new Point[corners.size()]);
-			Arrays.sort(sortY, new Comparator<Point>() {
-				public int compare(Point a, Point b) {
-					int xComp = Integer.compare(a.y, b.y);
-					if (xComp == 0)
-						return Integer.compare(a.x, b.x);
-					else
-						return xComp;
-				}
-			});
-
-			for (Point p : sortY) {
-				System.out.println(p.y + " " + p.x);
-			}
-			System.err.println("-----------");
-			Point[] sortX = corners.toArray(new Point[corners.size()]);
-			Arrays.sort(sortX, new Comparator<Point>() {
-				public int compare(Point a, Point b) {
-					int xComp = Integer.compare(a.x, b.x);
-					if (xComp == 0)
-						return Integer.compare(a.y, b.y);
-					else
-						return xComp;
-				}
-			});
-			for (Point p : sortX) {
-				System.out.println(p.y + " " + p.x);
-			}
+			Set<Point> items = new HashSet<Point>();
 
 			// asile then row of the display ...not absolute
 			int products[][] = { { 1, 8 }, { 24, 4 } };
@@ -199,18 +172,57 @@ public class test {
 			for (int i = 0; i < locations.length; i++) {
 				int y = locations[i][0];
 				int x = locations[i][1];
+				Point pt = null;
 
 				if (!mat[y][x - 1]) {// if there is a free spot to the // left
 					// add a pt here
-					Point pt = new Point(x - 1, y);
+					pt = new Point(x - 1, y);
+					items.add(pt);
 					System.out.println(pt);
 					// corners.add(pt);
 				} else if (!mat[y][x + 1]) {
 					// add a pt at mat[i1 + 1][j1]
-					Point pt = new Point(x + 1, y);
+					pt = new Point(x + 1, y);
+					items.add(pt);
 					System.out.println(pt);
 					// corners.add(pt);
 				}
+				items.add(pt);
+			}
+
+			corners.addAll(items);
+
+			int weights[][] = new int[corners.size()][corners.size()];
+//			Arrays.fill(array, -1);
+
+			Point[] sortY = corners.toArray(new Point[corners.size()]);
+			Arrays.sort(sortY, new Comparator<Point>() {
+				public int compare(Point a, Point b) {
+					int xComp = Integer.compare(a.y, b.y);
+					if (xComp == 0)
+						return Integer.compare(a.x, b.x);
+					else
+						return xComp;
+				}
+			});
+
+			for (Point p : sortY) {
+				System.out.println(p.y + " " + p.x);
+			}
+			System.err.println("-----------");
+
+			Point[] sortX = corners.toArray(new Point[corners.size()]);
+			Arrays.sort(sortX, new Comparator<Point>() {
+				public int compare(Point a, Point b) {
+					int xComp = Integer.compare(a.x, b.x);
+					if (xComp == 0)
+						return Integer.compare(a.y, b.y);
+					else
+						return xComp;
+				}
+			});
+			for (Point p : sortX) {
+				System.out.println(p.y + " " + p.x);
 			}
 
 		} catch (
