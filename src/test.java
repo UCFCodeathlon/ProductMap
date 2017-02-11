@@ -200,13 +200,13 @@ public class test {
 			// // items.add(pt);
 			// }
 
-			items.add(new Point(10, 27));
-			items.add(new Point(6, 0));
+			items.add(new Point(27, 10));
+			items.add(new Point(6, 1));
 			items.add(new Point(12, 6));
-			items.add(new Point(17, 27));
-			items.add(new Point(14, 27));
+			items.add(new Point(27, 17));
+			items.add(new Point(27, 14));
 
-			Point[] temp = items.toArray(new Point[items.size() + 1]);
+			Point[] temp = items.toArray(new Point[items.size()]);
 			// Collections.shuffle(Arrays.asList(temp));
 
 			System.out.println(Arrays.deepToString(temp));
