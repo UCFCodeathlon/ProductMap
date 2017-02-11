@@ -115,13 +115,19 @@ public class ProductMap {
 	}
 
 }
+
+
+
+
+
+
 class FloydWarshall {
-    private double[][] distances;
+    private double[12][6] distances;
     private boolean negativeCycle = false;
 
     public FloydWarshall(double[][] graph) {
         int n = graph.length;
-        distances = Arrays.copyOf(graph, n);
+        distances = //Arrays.copyOf(graph, n);
 
         for (int k = 0; k < n; k++) {
             for (int i = 0; i < n; i++) {
