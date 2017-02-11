@@ -1,8 +1,10 @@
 import java.awt.Point;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashSet;
+import java.util.InputMismatchException;
 import java.util.Scanner;
 import java.util.Set;
 
@@ -147,83 +149,162 @@ public class test {
 
 			Set<Point> items = new HashSet<Point>();
 
-			// asile then row of the display ...not absolute
-			int products[][] = { { 1, 8 }, { 24, 4 } };
-			int locations[][] = new int[products.length][2];
-			for (int i = 0; i < products.length; i++) {
-				int[] item = products[i];
-				int asile = item[0]; // 1 to 24?
-				int bay = item[1]; // 1 to BAY_LENGTH
+			// // asile then row of the display ...not absolute
+			// int products[][] = { { 1, 8 }, { 24, 4 } };
+			//// int products[][] = { { 1, 8 }, { 24, 4 } };
+			// int locations[][] = new int[products.length][2];
+			// for (int i = 0; i < products.length; i++) {
+			// int[] item = products[i];
+			// int asile = item[0]; // 1 to 24?
+			// int bay = item[1]; // 1 to BAY_LENGTH
+			//
+			// if (asile <= 20) {
+			// locations[i][0] = bay - 1;
+			// locations[i][1] = asile;
+			// } else if (asile <= 40) {
+			// locations[i][0] = BAY_LENGTH + bay;
+			// locations[i][1] = asile - 20 + 1;
+			// } else {
+			// // 2 for spaces
+			// locations[i][0] = BAY_LENGTH * 2 + 2 + (asile - 24);
+			// locations[i][1] = 1 + bay + BAY_LENGTH * (asile - 24 + 1 % 2);
+			// }
+			// }
+			// System.out.println(Arrays.deepToString(locations));
+			// // int[][] locations = { { 8, 1 }, { 13, 6 } };
+			// for (int i = 0; i < locations.length; i++) {
+			// int y = locations[i][0];
+			// int x = locations[i][1];
+			// Point pt = null;
+			//
+			// if (!mat[y][x - 1]) {// if there is a free spot to the // left
+			// // add a pt here
+			// pt = new Point(x - 1, y);
+			// items.add(pt);
+			// System.out.println(pt);
+			// // corners.add(pt);
+			// } else if (!mat[y][x + 1]) {
+			// // add a pt at mat[i1 + 1][j1]
+			// pt = new Point(x + 1, y);
+			// items.add(pt);
+			// System.out.println(pt);
+			// // corners.add(pt);
+			// }
+			// items.add(pt);
+			// }
+			items.add(new Point(3, 7));
+			items.add(new Point(0, 9));
+			items.add(new Point(2, 2));
+			Point[] temp = items.toArray(new Point[items.size()]);
+			Collections.shuffle(Arrays.asList(temp));
 
-				if (asile <= 20) {
-					locations[i][0] = bay - 1;
-					locations[i][1] = asile;
-				} else if (asile <= 40) {
-					locations[i][0] = BAY_LENGTH + bay;
-					locations[i][1] = asile - 20 + 1;
-				} else {
-					// 2 for spaces
-					locations[i][0] = BAY_LENGTH * 2 + 2 + (asile - 24);
-					locations[i][1] = 1 + bay + BAY_LENGTH * (asile - 24 + 1 % 2);
+			System.out.println(Arrays.deepToString(temp));
+			System.err.println("-");
+			Point[] sorted = sortY(corners);
+
+			Point[] points = new Point[corners.size() + items.size()];
+			System.arraycopy(sorted, 0, points, 0, sorted.length);
+			System.out.println(Arrays.deepToString(points));
+			System.arraycopy(temp, 0, points, sorted.length, items.size());
+			System.out.println(Arrays.deepToString(points));
+			System.err.println("------");
+			//
+			// corners.addAll(items);
+			// System.out.println(Arrays.deepToString(corners.toArray()));
+			// Point[] points = corners.toArray(new Point[corners.size()]);
+			double weights[][] = new double[points.length][points.length];
+			for (int i = 0; i < points.length; i++) {
+				for (int j = 0; j < points.length; j++) {
+					weights[i][j] = Math.abs(points[j].x - points[i].x) + Math.abs(points[j].y - points[i].y);
+					// dist = Math.abs(x2 - x1) + Math.abs(y2 - y1);
 				}
 			}
-			System.out.println(Arrays.deepToString(locations));
-			// int[][] locations = { { 8, 1 }, { 13, 6 } };
-			for (int i = 0; i < locations.length; i++) {
-				int y = locations[i][0];
-				int x = locations[i][1];
-				Point pt = null;
 
-				if (!mat[y][x - 1]) {// if there is a free spot to the // left
-					// add a pt here
-					pt = new Point(x - 1, y);
-					items.add(pt);
-					System.out.println(pt);
-					// corners.add(pt);
-				} else if (!mat[y][x + 1]) {
-					// add a pt at mat[i1 + 1][j1]
-					pt = new Point(x + 1, y);
-					items.add(pt);
-					System.out.println(pt);
-					// corners.add(pt);
-				}
-				items.add(pt);
+			for (int i = 0; i < weights.length; i++) {
+				System.out.println(Arrays.toString(weights[i]));
+			}
+			System.err.println("------");
+
+//			FloydWarshall2.floydWarshall2(weights, points.length);
+//			FloydWarshall2.printResult(dist, next);
+			// FloydWarshall fw = new FloydWarshall(weights);
+
+			// fw.distances();
+			// System.out.println(Arrays.deepToString(DistanceMap));
+			// System.out.println();
+			// System.out.println(Arrays.deepToString(fw.distances()));
+			//
+			for (int i = 0; i < weights.length; i++) {
+				System.out.print(Arrays.toString(weights[i]));
+				// make true if blocked
+				System.out.println();
 			}
 
-			corners.addAll(items);
+			int sub[][] = new int[4][4];
 
-			int weights[][] = new int[corners.size()][corners.size()];
-//			Arrays.fill(array, -1);
-
-			Point[] sortY = corners.toArray(new Point[corners.size()]);
-			Arrays.sort(sortY, new Comparator<Point>() {
-				public int compare(Point a, Point b) {
-					int xComp = Integer.compare(a.y, b.y);
-					if (xComp == 0)
-						return Integer.compare(a.x, b.x);
-					else
-						return xComp;
+			// int len = weights.length - sub.length - 1;
+			//// for (int i = len; i > weights.length; i--) {
+			//// for (int j = len; j > weights.length; j--) {
+			//// sub[len - i][len - j] = (int) weights[i][i];
+			//// }
+			//// }
+			// 15 index
+			// 19-4=15+1=16
+			int len = weights.length - sub.length + 1;
+			for (int i = len - 1; i < weights.length; i++) {
+				for (int j = len - 1; j < weights.length; j++) {
+					System.out.println(j + " " + i);
+					sub[i - len + 1][j - len + 1] = (int) weights[i][j];
 				}
-			});
-
-			for (Point p : sortY) {
-				System.out.println(p.y + " " + p.x);
 			}
-			System.err.println("-----------");
 
-			Point[] sortX = corners.toArray(new Point[corners.size()]);
-			Arrays.sort(sortX, new Comparator<Point>() {
-				public int compare(Point a, Point b) {
-					int xComp = Integer.compare(a.x, b.x);
-					if (xComp == 0)
-						return Integer.compare(a.y, b.y);
-					else
-						return xComp;
-				}
-			});
-			for (Point p : sortX) {
-				System.out.println(p.y + " " + p.x);
+			System.out.println();
+			for (int i = 0; i < sub.length; i++) {
+				System.out.print(Arrays.toString(sub[i]));
+				// make true if blocked
+				System.out.println();
 			}
+
+			try {
+				TSPNearestNeighbour tspNearestNeighbour = new TSPNearestNeighbour();
+				tspNearestNeighbour.tsp(sub);
+			} catch (InputMismatchException inputMismatch) {
+				System.out.println("Wrong Input format");
+			}
+
+			//
+
+			// Arrays.fill(array, -1);
+
+			// Point[] sortY = corners.toArray(new Point[corners.size()]);
+			// Arrays.sort(sortY, new Comparator<Point>() {
+			// public int compare(Point a, Point b) {
+			// int xComp = Integer.compare(a.y, b.y);
+			// if (xComp == 0)
+			// return Integer.compare(a.x, b.x);
+			// else
+			// return xComp;
+			// }
+			// });
+			//
+			// for (Point p : sortY) {
+			// System.out.println(p.y + " " + p.x);
+			// }
+			// System.err.println("-----------");
+			//
+			// Point[] sortX = corners.toArray(new Point[corners.size()]);
+			// Arrays.sort(sortX, new Comparator<Point>() {
+			// public int compare(Point a, Point b) {
+			// int xComp = Integer.compare(a.x, b.x);
+			// if (xComp == 0)
+			// return Integer.compare(a.y, b.y);
+			// else
+			// return xComp;
+			// }
+			// });
+			// for (Point p : sortX) {
+			// System.out.println(p.y + " " + p.x);
+			// }
 
 		} catch (
 
@@ -234,6 +315,25 @@ public class test {
 
 	public static boolean inBounds(int col, int row, int length, int width) {
 		return !(row < 0 || col < 0 || row >= length || col >= width);
+	}
+
+	public static Point[] sortY(Set<Point> corners) {
+		Point[] sortY = corners.toArray(new Point[corners.size()]);
+		Arrays.sort(sortY, new Comparator<Point>() {
+			public int compare(Point a, Point b) {
+				int xComp = Integer.compare(a.y, b.y);
+				if (xComp == 0)
+					return Integer.compare(a.x, b.x);
+				else
+					return xComp;
+			}
+		});
+
+		for (Point p : sortY) {
+			System.out.println(p.y + " " + p.x);
+		}
+		System.err.println("-----------");
+		return sortY;
 	}
 
 }
